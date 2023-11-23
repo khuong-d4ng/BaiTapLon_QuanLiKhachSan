@@ -153,6 +153,18 @@ public:
         cout << "Khong tim thay khach san voi ma " << code << " de xoa." << endl;
     }
 
+    void suaThongTinKhachSan(int code, const string& tenMoi, float ratingMoi) {
+        Node* temp = head;
+        while (temp != nullptr) {
+            if (temp->hotel.getMaHotel() == code) {
+                temp->hotel = Hotel(code, tenMoi, ratingMoi);
+                return;
+            }
+            temp = temp->next;
+        }
+        cout << "Khong tim thay khach san voi ma " << code << " de sua thong tin." << endl;
+    }
+
     // giai phong' bo nho'
     ~quanLiHotel() {
         Node* temp = head;
@@ -190,12 +202,14 @@ int main() {
             cout << "====== QUAN LI KHACH SAN ======" << endl;
             cout << "1. Them khach san" << endl;
             cout << "2. Xoa khach san" << endl;
+            cout << "3. Sua thong tin khach san" << endl;
             cout << "0. Quay lai menu chinh" << endl;
             cout << "Nhap lua chon cua ban: ";
             cin >> managerLuaChon;
 
             switch (managerLuaChon) {
             case 1:
+                cout << "\n====== THEM KHACH SAN MOI ======" << endl;
                 cout << "Nhap thong tin khach san moi:" << endl;
                 cout << "Ma khach san: ";
                 cin >> maHotel;
@@ -209,9 +223,26 @@ int main() {
                 cout << "Da them khach san moi." << endl;
                 break;
             case 2:
+                cout << "\n====== XOA KHACH SAN ======" << endl;
+                cout << "Danh sach khach san hien co:" << endl;
+                hotelManager.hienThiTatCaHotel();
                 cout << "Nhap ma khach san muon xoa: ";
                 cin >> maHotel;
                 hotelManager.deleteHotel(maHotel);
+                break;
+            case 3:
+                cout << "\n====== SUA THONG TIN ======" << endl;
+                cout << "Danh sach khach san hien co:" << endl;
+                hotelManager.hienThiTatCaHotel();
+                cout << "Nhap ma khach san muon sua thong tin: ";
+                cin >> maHotel;
+                cout << "Nhap thong tin moi cho khach san:" << endl;
+                cout << "Ten khach san: ";
+                cin.ignore(); // Xóa bộ đệm
+                getline(cin, tenHotel);
+                cout << "Danh gia (tu 1-5 sao): ";
+                cin >> ratingHotel;
+                hotelManager.suaThongTinKhachSan(maHotel, tenHotel, ratingHotel);
                 break;
             case 0:
                 break;
@@ -231,7 +262,7 @@ int main() {
 
             switch (viewLuaChon) {
             case 1:
-                cout << "Danh sach khach san hien co:" << endl;
+                cout << "\n====== DANH SACH KHACH SAN HIEN CO ======" << endl;
                 hotelManager.hienThiTatCaHotel();
                 break;
             case 2:
