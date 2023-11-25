@@ -189,6 +189,8 @@ int main() {
 
     Hotel* tempDiaChiHotel = nullptr; // khởi tạo trước giá trị = nullptr để tránh lỗi C360 C361
 
+    cout << "dong da den day ";
+
     do {
         
         cout << "====== MENU ======" << endl;
