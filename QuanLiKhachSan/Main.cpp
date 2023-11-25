@@ -1,11 +1,12 @@
-﻿#include "Hotel.h"
+﻿//Main.cpp
+#include "Hotel.h"
 #include <iostream>
-#include "quanLiHotel.h"
+#include "HotelManager.h"
 
 using namespace std;
 
 int main() {
-    quanLiHotel hotelManager;
+    HotelManager hotelManager;
 
     int luaChon;
     int maHotel;

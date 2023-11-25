@@ -127,12 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HotelManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Hotel.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="quanLiHotel.h" />
+    <ClInclude Include="HotelManager.h" />
     <ClInclude Include="Hotel.h" />
     <ClInclude Include="HotelS.h" />
   </ItemGroup>

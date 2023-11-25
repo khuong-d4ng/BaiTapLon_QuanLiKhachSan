@@ -275,7 +275,7 @@ int main() {
                 * biến tempDiaChiHotel lưu trữ địa chỉ trỏ tới hotel cần tìm, ban đầu là nullptr
                 * nếu sau phuong thức tìm mà khác nullptr tức là tìm đc 
                 * != thì hiển thị hotel có địa chỉ là tempDiaChiHotel
-                */
+                
                 tempDiaChiHotel = hotelManager.timHotelBangMaSoBST(maHotel);
                 if (tempDiaChiHotel != nullptr) {
                     cout << "Thong tin khach san tim duoc:" << endl;
