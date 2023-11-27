@@ -1,5 +1,7 @@
 ﻿#include <iostream>
 #include <string>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -14,7 +16,7 @@ public:
     Hotel(int maHotel, const string& ten, const string& diaChi, float saoRating)
         : maHotel(maHotel), tenHotel(ten), diaChiHotel(diaChi), ratingHotel(saoRating) {}
 
-    void hienThiTTHotel() {
+    void hienThiTTHotel() const {
         cout << "ID khach san: " << maHotel << endl;
         cout << "Ten khach san: " << tenHotel << endl;
         cout << "Dia chi khach san: " << diaChiHotel << endl;
@@ -23,6 +25,10 @@ public:
 
     int getMaHotel() const {
         return maHotel;
+    }
+
+    string getDiaChiHotel() const {
+        return diaChiHotel;
     }
 };
 
@@ -145,7 +151,7 @@ public:
         cin.ignore(); // Xóa bộ đệm
         getline(cin, tenHotel);
         cout << "Dia chi khach san: ";
-        getline(cin, diaChiHotel); // Nhập địa chỉ khách sạn
+        getline(cin, diaChiHotel);
         cout << "Danh gia (tu 1-5 sao): ";
         cin >> ratingHotel;
 
@@ -194,6 +200,61 @@ public:
         cout << "Khong tim thay khach san voi ma " << code << "." << endl;
     }
 
+    static bool soSanhDiaChi(const Hotel& a, const Hotel& b) {
+        return a.getDiaChiHotel() < b.getDiaChiHotel();
+    }
+
+    void swapHotel(Hotel& a, Hotel& b) {
+        Hotel temp = a;
+        a = b;
+        b = temp;
+    }
+
+    //chia mảng theo pivot
+    int partition(vector<Hotel>& dsHotel, int batDau, int ketThuc) {
+        string pivot = dsHotel[ketThuc].getDiaChiHotel();
+        int i = batDau - 1;
+
+        for (int j = batDau; j <= ketThuc - 1; j++) {
+            if (dsHotel[j].getDiaChiHotel() < pivot) {
+                i++;
+                swapHotel(dsHotel[i], dsHotel[j]);
+            }
+        }
+        swapHotel(dsHotel[i + 1], dsHotel[ketThuc]);
+        return i + 1;
+    }
+
+    // sắp xếp theo địa chỉ (quicksort)
+    void quickSort(vector<Hotel>& dsHotel, int batDau, int ketThuc) {
+        if (batDau < ketThuc) {
+            int pi = partition(dsHotel, batDau, ketThuc);
+            quickSort(dsHotel, batDau, pi - 1);
+            quickSort(dsHotel, pi + 1, ketThuc);
+        }
+    }
+
+    void sapXepTheoDiaChi() {
+        vector<Hotel> dsHotel;
+        getDSHotelVaoVector(root, dsHotel);
+
+        // sắp xếp địa chỉ sử dụng quickssrot 
+        quickSort(dsHotel, 0, dsHotel.size() - 1);
+
+        cout << "\n====== DANH SACH KHACH SAN SAU KHI SAP XEP THEO DIA CHI ======" << endl;
+        for (const auto& hotel : dsHotel) {
+            hotel.hienThiTTHotel();
+        }
+    }
+
+
+    void getDSHotelVaoVector(BSTNode* node, vector<Hotel>& dsHotel) {
+        if (node != nullptr) {
+            getDSHotelVaoVector(node->left, dsHotel);
+            dsHotel.push_back(node->hotel);
+            getDSHotelVaoVector(node->right, dsHotel);
+        }
+    }
 
     ~HotelManager() {
         deleteBSTNodes(root);
@@ -272,6 +333,7 @@ int main() {
             cout << "====== XEM DANH SACH KHACH SAN ======" << endl;
             cout << "1. Hien thi danh sach khach san" << endl;
             cout << "2. Tim kiem khach san theo ma" << endl;
+            cout << "3. Sap xep theo dia diem khach san" << endl;
             cout << "0. Quay lai menu chinh" << endl;
             cout << "Nhap lua chon cua ban: ";
             cin >> viewLuaChon;
@@ -287,7 +349,7 @@ int main() {
                 cout << "Nhap ma khach san muon tim: ";
                 cin >> maHotel;
 
-                // Sử dụng hàm timHotelBangMaSo của HotelManager thay vì timHotelBangMaSoBST
+                //timHotelBangMaSo của HotelManager thay vì timHotelBangMaSoBST
                 tempDiaChiHotel = hotelManager.timHotelBangMaSo(maHotel);
 
                 if (tempDiaChiHotel != nullptr) {
@@ -298,6 +360,11 @@ int main() {
                     cout << "Khong tim thay khach san voi ma " << maHotel << "." << endl;
                 }
                 break;
+            case 3:
+                system("cls");
+                hotelManager.sapXepTheoDiaChi();
+                break;
+
             case 0:
                 break;
             default:
