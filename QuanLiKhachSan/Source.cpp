@@ -17,10 +17,12 @@ public:
         : maHotel(maHotel), tenHotel(ten), diaChiHotel(diaChi), ratingHotel(saoRating) {}
 
     void hienThiTTHotel() const {
-        cout << "ID khach san: " << maHotel << endl;
-        cout << "Ten khach san: " << tenHotel << endl;
-        cout << "Dia chi khach san: " << diaChiHotel << endl;
-        cout << "Danh gia sao: " << ratingHotel << " sao" << endl;
+        cout << "\t---------- HOTEL ----------" << endl;
+        cout << "\tID khach san: " << maHotel << endl;
+        cout << "\tTen khach san: " << tenHotel << endl;
+        cout << "\tDia chi khach san: " << diaChiHotel << endl;
+        cout << "\tDanh gia sao: " << ratingHotel << " sao" << endl;
+        cout << "\t---------------------------" << endl;
     }
 
     int getMaHotel() const {
@@ -168,7 +170,7 @@ public:
     }
 
     void hienThiTatCaHotel() {
-        cout << "\n====== DANH SACH KHACH SAN HIEN CO ======" << endl;
+      //  cout << "\n====== DANH SACH KHACH SAN HIEN CO ======" << endl;
         duyetGocGiua(root);
     }
 
@@ -241,7 +243,7 @@ public:
         // sắp xếp địa chỉ sử dụng quickssrot 
         quickSort(dsHotel, 0, dsHotel.size() - 1);
 
-        cout << "\n====== DANH SACH KHACH SAN SAU KHI SAP XEP THEO DIA CHI ======" << endl;
+        cout << "\n     ====== DANH SACH KHACH SAN SAU KHI SAP XEP THEO DIA CHI ======" << endl;
         for (const auto& hotel : dsHotel) {
             hotel.hienThiTTHotel();
         }
@@ -259,7 +261,24 @@ public:
     ~HotelManager() {
         deleteBSTNodes(root);
     }
+
+  
 };
+
+void khungLogin() {
+    cout << "+-----------------------+" << endl;
+    cout << "|      DANG NHAP        |" << endl;
+    cout << "+-----------------------+" << endl;
+}
+
+void printLine(int n) {
+    cout << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "_";
+    }
+    cout << endl;
+}
+
 
 int main() {
     HotelManager hotelManager;
@@ -268,6 +287,39 @@ int main() {
     Hotel* tempDiaChiHotel = nullptr;
     int luaChon;
     int maHotel;
+    string tkAdmin = "admin";
+    string mkAdmin = "admin"; //TK va MK
+    string username, password;
+
+
+    //do {
+    //    system("cls");
+    //    khungLogin();
+    //
+    //    cout << "Nhap ten dang nhap: ";
+    //    cin >> username;
+    //
+    //    cout << "Nhap mat khau: ";
+    //    cin >> password;
+    //
+    //    if (username == tkAdmin && password == mkAdmin) {
+    //        system("cls");
+    //        cout << "+------------------------+" << endl;
+    //        cout << "|  DANG NHAP THANH CONG  |" << endl;
+    //        cout << "+------------------------+" << endl;
+    //        break;
+    //    }
+    //    else {
+    //        system("cls");
+    //        khungLogin();
+    //        cout << "+-----------------------+" << endl;
+    //        cout << "|  Dang nhap that bai.  |" << endl;
+    //        cout << "+-----------------------+" << endl;
+    //        cout << "Nhan Enter de dang nhap lai...";
+    //        cin.ignore(); // Đọc kí tự Enter từ bàn phím
+    //        cin.get();     // Đợi người dùng nhấn Enter
+    //    }
+    //} while (true);
 
     do {
         cout << "====== MENU ======" << endl;
@@ -341,8 +393,14 @@ int main() {
             switch (viewLuaChon) {
             case 1:
                 system("cls");
-                cout << "\n====== DANH SACH KHACH SAN HIEN CO ======" << endl;
+                printLine(55);
+                printLine(55);
+                cout << "\n     ====== DANH SACH KHACH SAN HIEN CO ======" << endl;
+
+
                 hotelManager.hienThiTatCaHotel();
+                printLine(55);
+                printLine(55);
                 break;
             case 2:
                 system("cls");
