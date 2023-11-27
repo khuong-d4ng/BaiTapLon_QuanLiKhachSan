@@ -1,5 +1,4 @@
-﻿
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 
 using namespace std;
@@ -27,14 +26,6 @@ public:
     }
 };
 
-class Node {
-public:
-    Hotel hotel;
-    Node* next;
-
-    Node(const Hotel& h) : hotel(h), next(nullptr) {}
-};
-
 class BSTNode {
 public:
     Hotel hotel;
@@ -46,11 +37,9 @@ public:
 
 class HotelManager {
 private:
-    Node* head;
-    Node* tail;
     BSTNode* root;
 
-    //hỗ trợ thêm node vào BST
+    // Hỗ trợ thêm node vào BST
     BSTNode* insertBSTNode(BSTNode* node, const Hotel& hotel) {
         if (node == nullptr) {
             return new BSTNode(hotel);
@@ -66,7 +55,8 @@ private:
         return node;
     }
 
-    //hỗ trợ tìm kiếm node trong BST
+
+    // Hỗ trợ tìm kiếm node trong BST
     Hotel* searchBSTNode(BSTNode* node, int code) {
         if (node == nullptr || node->hotel.getMaHotel() == code) {
             if (node != nullptr) {
@@ -83,7 +73,7 @@ private:
         }
     }
 
-    //giải phóng bộ nhớ của BST
+    // Hỗ trợ xóa node trong BST
     void deleteBSTNodes(BSTNode* node) {
         if (node != nullptr) {
             deleteBSTNodes(node->left);
@@ -92,19 +82,54 @@ private:
         }
     }
 
-public:
-    HotelManager() : head(nullptr), tail(nullptr), root(nullptr) {}
+    // Hàm tìm node nhỏ nhất từ một node cho trước trong BST
+    BSTNode* findMin(BSTNode* node) {
+        while (node->left != nullptr) {
+            node = node->left;
+        }
+        return node;
+    }
 
-    void addHotel(const Hotel& hotel) {
-        root = insertBSTNode(root, hotel);
+    // Hỗ trợ xóa node trong BST
+    void deleteHotelFromBST(BSTNode*& node, int code) {
+        if (node == nullptr) {
+            return;
+        }
 
-        Node* newNode = new Node(hotel);
-        if (head == nullptr) {
-            head = tail = newNode;
+        if (code < node->hotel.getMaHotel()) {
+            deleteHotelFromBST(node->left, code);
+        }
+        else if (code > node->hotel.getMaHotel()) {
+            deleteHotelFromBST(node->right, code);
         }
         else {
-            tail->next = newNode;
-            tail = newNode;
+            if (node->left == nullptr) {
+                BSTNode* temp = node->right;
+                delete node;
+                node = temp;
+            }
+            else if (node->right == nullptr) {
+                BSTNode* temp = node->left;
+                delete node;
+                node = temp;
+            }
+            else {
+                BSTNode* temp = findMin(node->right);
+                node->hotel = temp->hotel;
+                deleteHotelFromBST(node->right, temp->hotel.getMaHotel());
+            }
+        }
+    }
+
+public:
+    HotelManager() : root(nullptr) {}
+
+    void addHotel(const Hotel& hotel) {
+        if (root == nullptr) {
+            root = new BSTNode(hotel);
+        }
+        else {
+            root = insertBSTNode(root, hotel);
         }
     }
 
@@ -127,92 +152,63 @@ public:
         return Hotel(maHotel, tenHotel, diaChiHotel, ratingHotel);
     }
 
+    //In-Oder Traversal <- BST giup hien thi khach san theo thu tu dang dan cua ma khach san
+    void duyetGocGiua(BSTNode* node) {
+        if (node != nullptr) {
+            duyetGocGiua(node->left);
+            node->hotel.hienThiTTHotel();
+            duyetGocGiua(node->right);
+        }
+    }
+
     void hienThiTatCaHotel() {
-        Node* temp = head;
-        while (temp != nullptr) {
-            temp->hotel.hienThiTTHotel();
-            cout << "--------------------" << endl;
-            temp = temp->next;
-        }
+        cout << "\n====== DANH SACH KHACH SAN HIEN CO ======" << endl;
+        duyetGocGiua(root);
     }
 
-    // tim kiem khach san dua tren makhachsan
+
     Hotel* timHotelBangMaSo(int code) {
-        Node* temp = head;
-        while (temp != nullptr) {
-            if (temp->hotel.getMaHotel() == code) {
-                return &(temp->hotel);
-            }
-            temp = temp->next;
-        }
-        return nullptr;
-    }
-
-    Hotel* timHotelBangMaSoBST(int code) {
         return searchBSTNode(root, code);
     }
 
     void deleteHotel(int code) {
-        Node* current = head;
-        Node* prev = nullptr;
-
-        while (current != nullptr) {
-            if (current->hotel.getMaHotel() == code) {
-                if (current == head) {
-                    head = current->next;
-                }
-                else {
-                    prev->next = current->next;
-                    if (current == tail) {
-                        tail = prev;
-                    }
-                }
-                delete current;
-                return;
-            }
-            prev = current;
-            current = current->next;
-        }
-        cout << "Khong tim thay khach san voi ma " << code << " de xoa." << endl;
+        deleteHotelFromBST(root, code);
     }
 
     void suaThongTinKhachSan(int code, const string& tenMoi, const string& diaChiMoi, float ratingMoi) {
-        Node* temp = head;
-        while (temp != nullptr) {
-            if (temp->hotel.getMaHotel() == code) {
-                temp->hotel = Hotel(code, tenMoi, diaChiMoi, ratingMoi);
+        BSTNode* current = root;
+
+        while (current != nullptr) {
+            if (code < current->hotel.getMaHotel()) {
+                current = current->left;
+            }
+            else if (code > current->hotel.getMaHotel()) {
+                current = current->right;
+            }
+            else {
+                current->hotel = Hotel(code, tenMoi, diaChiMoi, ratingMoi);
+                cout << "Da cap nhat thong tin cho khach san co ma " << code << endl;
                 return;
             }
-            temp = temp->next;
         }
-        cout << "Khong tim thay khach san voi ma " << code << " de sua thong tin." << endl;
+        cout << "Khong tim thay khach san voi ma " << code << "." << endl;
     }
 
-    // giai phong' bo nho'
+
     ~HotelManager() {
-        Node* temp = head;
-        while (temp != nullptr) {
-            Node* next = temp->next;
-            delete temp;
-            temp = next;
-        }
+        deleteBSTNodes(root);
     }
 };
 
 int main() {
     HotelManager hotelManager;
-
+    string tenHotel, diaChiHotel;
+    float ratingHotel;
+    Hotel* tempDiaChiHotel = nullptr;
     int luaChon;
     int maHotel;
-    string tenHotel;
-    string diaChiHotel;
-    float ratingHotel;
-
-    Hotel* tempDiaChiHotel = nullptr; // khởi tạo trước giá trị = nullptr để tránh lỗi C360 C361
-
 
     do {
-        
         cout << "====== MENU ======" << endl;
         cout << "1. Quan li khach san" << endl;
         cout << "2. Xem danh sach khach san" << endl;
@@ -220,7 +216,6 @@ int main() {
         cout << "Nhap lua chon cua ban: ";
         cin >> luaChon;
         system("cls");
-
         switch (luaChon) {
         case 1:
             int managerLuaChon;
@@ -233,12 +228,14 @@ int main() {
             cin >> managerLuaChon;
 
             switch (managerLuaChon) {
+                system("cls");
             case 1:
                 cout << "\n====== THEM KHACH SAN MOI ======" << endl;
                 hotelManager.addHotel(hotelManager.nhapThongTinKhachSanMoi());
                 cout << "Da them khach san moi." << endl;
                 break;
             case 2:
+                system("cls");
                 cout << "\n====== XOA KHACH SAN ======" << endl;
                 cout << "Danh sach khach san hien co:" << endl;
                 hotelManager.hienThiTatCaHotel();
@@ -247,6 +244,7 @@ int main() {
                 hotelManager.deleteHotel(maHotel);
                 break;
             case 3:
+                system("cls");
                 cout << "\n====== SUA THONG TIN ======" << endl;
                 cout << "Danh sach khach san hien co:" << endl;
                 hotelManager.hienThiTatCaHotel();
@@ -280,18 +278,18 @@ int main() {
 
             switch (viewLuaChon) {
             case 1:
+                system("cls");
                 cout << "\n====== DANH SACH KHACH SAN HIEN CO ======" << endl;
                 hotelManager.hienThiTatCaHotel();
                 break;
             case 2:
+                system("cls");
                 cout << "Nhap ma khach san muon tim: ";
                 cin >> maHotel;
-                /*
-                * biến tempDiaChiHotel lưu trữ địa chỉ trỏ tới hotel cần tìm, ban đầu là nullptr
-                * nếu sau phuong thức tìm mà khác nullptr tức là tìm đc 
-                * != thì hiển thị hotel có địa chỉ là tempDiaChiHotel
-                */
-                tempDiaChiHotel = hotelManager.timHotelBangMaSoBST(maHotel);
+
+                // Sử dụng hàm timHotelBangMaSo của HotelManager thay vì timHotelBangMaSoBST
+                tempDiaChiHotel = hotelManager.timHotelBangMaSo(maHotel);
+
                 if (tempDiaChiHotel != nullptr) {
                     cout << "Thong tin khach san tim duoc:" << endl;
                     tempDiaChiHotel->hienThiTTHotel();
@@ -305,6 +303,7 @@ int main() {
             default:
                 cout << "Lua chon khong hop le." << endl;
             }
+            break;
             
             break;
 
