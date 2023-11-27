@@ -1,6 +1,4 @@
-﻿/*
-* 
-* ===================== KHÔNG THAO TÁC Ở ĐÂY ========================
+﻿
 #include <iostream>
 #include <string>
 
@@ -10,15 +8,18 @@ class Hotel {
 private:
     int maHotel;
     string tenHotel;
+    string diaChiHotel;
     float ratingHotel;
 
 public:
-    Hotel(int maHotel, const string& ten, float saoRating) : maHotel(maHotel), tenHotel(ten), ratingHotel(saoRating) {}
+    Hotel(int maHotel, const string& ten, const string& diaChi, float saoRating)
+        : maHotel(maHotel), tenHotel(ten), diaChiHotel(diaChi), ratingHotel(saoRating) {}
 
     void hienThiTTHotel() {
-        cout << "Hotel Code: " << maHotel << endl;
-        cout << "Hotel Name: " << tenHotel << endl;
-        cout << "Star Rating: " << ratingHotel << " stars" << endl;
+        cout << "ID khach san: " << maHotel << endl;
+        cout << "Ten khach san: " << tenHotel << endl;
+        cout << "Dia chi khach san: " << diaChiHotel << endl;
+        cout << "Danh gia sao: " << ratingHotel << " sao" << endl;
     }
 
     int getMaHotel() const {
@@ -43,7 +44,7 @@ public:
     BSTNode(const Hotel& h) : hotel(h), left(nullptr), right(nullptr) {}
 };
 
-class quanLiHotel {
+class HotelManager {
 private:
     Node* head;
     Node* tail;
@@ -92,7 +93,7 @@ private:
     }
 
 public:
-    quanLiHotel() : head(nullptr), tail(nullptr), root(nullptr) {}
+    HotelManager() : head(nullptr), tail(nullptr), root(nullptr) {}
 
     void addHotel(const Hotel& hotel) {
         root = insertBSTNode(root, hotel);
@@ -105,6 +106,25 @@ public:
             tail->next = newNode;
             tail = newNode;
         }
+    }
+
+    Hotel nhapThongTinKhachSanMoi() {
+        int maHotel;
+        string tenHotel, diaChiHotel;
+        float ratingHotel;
+
+        cout << "Nhap thong tin khach san moi:" << endl;
+        cout << "Ma khach san: ";
+        cin >> maHotel;
+        cout << "Ten khach san: ";
+        cin.ignore(); // Xóa bộ đệm
+        getline(cin, tenHotel);
+        cout << "Dia chi khach san: ";
+        getline(cin, diaChiHotel); // Nhập địa chỉ khách sạn
+        cout << "Danh gia (tu 1-5 sao): ";
+        cin >> ratingHotel;
+
+        return Hotel(maHotel, tenHotel, diaChiHotel, ratingHotel);
     }
 
     void hienThiTatCaHotel() {
@@ -156,11 +176,11 @@ public:
         cout << "Khong tim thay khach san voi ma " << code << " de xoa." << endl;
     }
 
-    void suaThongTinKhachSan(int code, const string& tenMoi, float ratingMoi) {
+    void suaThongTinKhachSan(int code, const string& tenMoi, const string& diaChiMoi, float ratingMoi) {
         Node* temp = head;
         while (temp != nullptr) {
             if (temp->hotel.getMaHotel() == code) {
-                temp->hotel = Hotel(code, tenMoi, ratingMoi);
+                temp->hotel = Hotel(code, tenMoi, diaChiMoi, ratingMoi);
                 return;
             }
             temp = temp->next;
@@ -169,7 +189,7 @@ public:
     }
 
     // giai phong' bo nho'
-    ~quanLiHotel() {
+    ~HotelManager() {
         Node* temp = head;
         while (temp != nullptr) {
             Node* next = temp->next;
@@ -180,16 +200,16 @@ public:
 };
 
 int main() {
-    quanLiHotel hotelManager;
+    HotelManager hotelManager;
 
     int luaChon;
     int maHotel;
     string tenHotel;
+    string diaChiHotel;
     float ratingHotel;
 
     Hotel* tempDiaChiHotel = nullptr; // khởi tạo trước giá trị = nullptr để tránh lỗi C360 C361
 
-    cout << "dong da den day ";
 
     do {
         
@@ -215,16 +235,7 @@ int main() {
             switch (managerLuaChon) {
             case 1:
                 cout << "\n====== THEM KHACH SAN MOI ======" << endl;
-                cout << "Nhap thong tin khach san moi:" << endl;
-                cout << "Ma khach san: ";
-                cin >> maHotel;
-                cout << "Ten khach san: ";
-                cin.ignore(); // cclear buffer tránh bị end chương trình hoặc lặp enter
-                getline(cin, tenHotel);
-                cout << "Danh gia (tu 1-5 sao): ";
-                cin >> ratingHotel;
-
-                hotelManager.addHotel(Hotel(maHotel, tenHotel, ratingHotel));
+                hotelManager.addHotel(hotelManager.nhapThongTinKhachSanMoi());
                 cout << "Da them khach san moi." << endl;
                 break;
             case 2:
@@ -243,11 +254,13 @@ int main() {
                 cin >> maHotel;
                 cout << "Nhap thong tin moi cho khach san:" << endl;
                 cout << "Ten khach san: ";
-                cin.ignore(); // Xóa bộ đệm
+                cin.ignore(); // xoa buffer
                 getline(cin, tenHotel);
+                cout << "Dia chi khach san: ";
+                getline(cin, diaChiHotel);
                 cout << "Danh gia (tu 1-5 sao): ";
                 cin >> ratingHotel;
-                hotelManager.suaThongTinKhachSan(maHotel, tenHotel, ratingHotel);
+                hotelManager.suaThongTinKhachSan(maHotel, tenHotel, diaChiHotel, ratingHotel);
                 break;
             case 0:
                 break;
@@ -277,7 +290,7 @@ int main() {
                 * biến tempDiaChiHotel lưu trữ địa chỉ trỏ tới hotel cần tìm, ban đầu là nullptr
                 * nếu sau phuong thức tìm mà khác nullptr tức là tìm đc 
                 * != thì hiển thị hotel có địa chỉ là tempDiaChiHotel
-                
+                */
                 tempDiaChiHotel = hotelManager.timHotelBangMaSoBST(maHotel);
                 if (tempDiaChiHotel != nullptr) {
                     cout << "Thong tin khach san tim duoc:" << endl;
@@ -306,4 +319,3 @@ int main() {
 
     return 0;
 }
-*/
