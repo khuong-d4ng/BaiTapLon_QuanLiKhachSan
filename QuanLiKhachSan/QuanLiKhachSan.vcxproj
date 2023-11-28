@@ -135,7 +135,9 @@
   <ItemGroup>
     <ClInclude Include="HotelManager.h" />
     <ClInclude Include="Hotel.h" />
-    <ClInclude Include="HotelS.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="dsHotel.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -30,13 +30,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hotel.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HotelS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HotelManager.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="dsHotel.txt">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -1,24 +1,27 @@
 ﻿#include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
+#include <chrono>
+#include <thread>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
 class Hotel {
 private:
-    int maHotel;
+    int idHotel;
     string tenHotel;
     string diaChiHotel;
     float ratingHotel;
 
 public:
-    Hotel(int maHotel, const string& ten, const string& diaChi, float saoRating)
-        : maHotel(maHotel), tenHotel(ten), diaChiHotel(diaChi), ratingHotel(saoRating) {}
+    Hotel(int idHotel, const string& ten, const string& diaChi, float saoRating)
+        : idHotel(idHotel), tenHotel(ten), diaChiHotel(diaChi), ratingHotel(saoRating) {}
 
     void hienThiTTHotel() const {
         cout << "\t---------- HOTEL ----------" << endl;
-        cout << "\tID khach san: " << maHotel << endl;
+        cout << "\tID khach san: " << idHotel << endl;
         cout << "\tTen khach san: " << tenHotel << endl;
         cout << "\tDia chi khach san: " << diaChiHotel << endl;
         cout << "\tDanh gia sao: " << ratingHotel << " sao" << endl;
@@ -26,11 +29,19 @@ public:
     }
 
     int getMaHotel() const {
-        return maHotel;
+        return idHotel;
+    }
+
+    string getTenHotel() const {
+        return tenHotel;
     }
 
     string getDiaChiHotel() const {
         return diaChiHotel;
+    }
+
+    float getRatingHotel() const {
+        return ratingHotel;
     }
 };
 
@@ -132,32 +143,56 @@ private:
 public:
     HotelManager() : root(nullptr) {}
 
+    BSTNode* getRoot() const {
+        return root;
+    }
+
     void addHotel(const Hotel& hotel) {
         if (root == nullptr) {
             root = new BSTNode(hotel);
         }
         else {
+            // Kiểm tra xem mã khách sạn đã tồn tại chưa
+            if (timHotelBangMaSo(hotel.getMaHotel()) != nullptr) {
+                cout << "Khach san voi ma so da ton tai. Khong the them." << endl;
+                return;
+            }
             root = insertBSTNode(root, hotel);
         }
     }
 
     Hotel nhapThongTinKhachSanMoi() {
-        int maHotel;
+        int idHotel;
         string tenHotel, diaChiHotel;
         float ratingHotel;
 
         cout << "Nhap thong tin khach san moi:" << endl;
-        cout << "Ma khach san: ";
-        cin >> maHotel;
+        // mã khách sạn dưới dạng chuỗi
+        string strMaHotel;
+        bool isValidInput = false;
+        do {
+            cout << "Ma khach san: ";
+            cin >> strMaHotel;
+
+            //kiểm tra xem chuỗi nhập vào có thể chuyển thành số nguyên không
+            try {
+                idHotel = stoi(strMaHotel);
+                isValidInput = true;
+            }
+            catch (const std::exception&) {
+                cout << "Ma khach san khong hop le. Vui long nhap lai." << endl;
+            }
+        } while (!isValidInput);
+
         cout << "Ten khach san: ";
-        cin.ignore(); // Xóa bộ đệm
+        cin.ignore(); // xóa bộ đệm
         getline(cin, tenHotel);
         cout << "Dia chi khach san: ";
         getline(cin, diaChiHotel);
         cout << "Danh gia (tu 1-5 sao): ";
         cin >> ratingHotel;
 
-        return Hotel(maHotel, tenHotel, diaChiHotel, ratingHotel);
+        return Hotel(idHotel, tenHotel, diaChiHotel, ratingHotel);
     }
 
     //In-Oder Traversal <- BST giup hien thi khach san theo thu tu dang dan cua ma khach san
@@ -175,31 +210,31 @@ public:
     }
 
 
-    Hotel* timHotelBangMaSo(int code) {
-        return searchBSTNode(root, code);
+    Hotel* timHotelBangMaSo(int idCanTim) {
+        return searchBSTNode(root, idCanTim);
     }
 
-    void deleteHotel(int code) {
-        deleteHotelFromBST(root, code);
+    void deleteHotel(int idHotel) {
+        deleteHotelFromBST(root, idHotel);
     }
 
-    void suaThongTinKhachSan(int code, const string& tenMoi, const string& diaChiMoi, float ratingMoi) {
+    void suaThongTinKhachSan(int idCanTim, const string& tenMoi, const string& diaChiMoi, float ratingMoi) {
         BSTNode* current = root;
 
         while (current != nullptr) {
-            if (code < current->hotel.getMaHotel()) {
+            if (idCanTim < current->hotel.getMaHotel()) {
                 current = current->left;
             }
-            else if (code > current->hotel.getMaHotel()) {
+            else if (idCanTim > current->hotel.getMaHotel()) {
                 current = current->right;
             }
             else {
-                current->hotel = Hotel(code, tenMoi, diaChiMoi, ratingMoi);
-                cout << "Da cap nhat thong tin cho khach san co ma " << code << endl;
+                current->hotel = Hotel(idCanTim, tenMoi, diaChiMoi, ratingMoi);
+                cout << "Da cap nhat thong tin cho khach san co ma " << idCanTim << endl;
                 return;
             }
         }
-        cout << "Khong tim thay khach san voi ma " << code << "." << endl;
+        cout << "Khong tim thay khach san voi ma " << idCanTim << "." << endl;
     }
 
     static bool soSanhDiaChi(const Hotel& a, const Hotel& b) {
@@ -236,6 +271,15 @@ public:
         }
     }
 
+
+    void getDSHotelVaoVector(BSTNode* node, vector<Hotel>& dsHotel) {
+        if (node != nullptr) {
+            getDSHotelVaoVector(node->left, dsHotel);
+            dsHotel.push_back(node->hotel);
+            getDSHotelVaoVector(node->right, dsHotel);
+        }
+    }
+
     void sapXepTheoDiaChi() {
         vector<Hotel> dsHotel;
         getDSHotelVaoVector(root, dsHotel);
@@ -249,21 +293,63 @@ public:
         }
     }
 
-
-    void getDSHotelVaoVector(BSTNode* node, vector<Hotel>& dsHotel) {
-        if (node != nullptr) {
-            getDSHotelVaoVector(node->left, dsHotel);
-            dsHotel.push_back(node->hotel);
-            getDSHotelVaoVector(node->right, dsHotel);
+    void ghiDSHotelVaoFile(const string& tenTepTin, BSTNode* node) {
+        ofstream fileOut(tenTepTin); // open file
+        if (!fileOut.is_open()) {
+            cout << "Khong the mo tep tin de ghi!" << endl;
+            return;
         }
+
+        vector<Hotel> dsHotel;
+        getDSHotelVaoVector(node, dsHotel);
+
+        for (const auto& hotel : dsHotel) {
+            fileOut << hotel.getMaHotel() << "," << hotel.getTenHotel() << "," << hotel.getDiaChiHotel() << "," << hotel.getRatingHotel() << endl;
+        }
+
+        fileOut.close();
     }
+    
+    void docDSHotelTuFile(const string& tenTepTin) {
+        ifstream fileIn(tenTepTin); // open file
+        if (!fileIn.is_open()) {
+            cout << "Khong the mo tep tin de doc!" << endl;
+            return;
+        }
+
+        int idHotel;
+        string tenHotel, diaChiHotel, line;
+        float ratingHotel;
+
+        while (getline(fileIn, line)) {
+            stringstream ss(line);
+            string token;
+
+            getline(ss, token, ',');
+            idHotel = stoi(token);
+
+            getline(ss, tenHotel, ',');
+            getline(ss, diaChiHotel, ',');
+
+            getline(ss, token);
+            ratingHotel = stof(token);
+
+            Hotel newHotel(idHotel, tenHotel, diaChiHotel, ratingHotel);
+            addHotel(newHotel); // add hotel vao ds
+        }
+
+        fileIn.close();
+    }
+
 
     ~HotelManager() {
         deleteBSTNodes(root);
     }
 
-  
 };
+
+
+
 
 void khungLogin() {
     cout << "+-----------------------+" << endl;
@@ -280,6 +366,7 @@ void printLine(int n) {
 }
 
 
+
 int main() {
     HotelManager hotelManager;
     string tenHotel, diaChiHotel;
@@ -290,6 +377,8 @@ int main() {
     string tkAdmin = "admin";
     string mkAdmin = "admin"; //TK va MK
     string username, password;
+
+    hotelManager.docDSHotelTuFile("dsHotel.txt");
 
 
     //do {
@@ -342,11 +431,23 @@ int main() {
 
             switch (managerLuaChon) {
                 system("cls");
-            case 1:
-                cout << "\n====== THEM KHACH SAN MOI ======" << endl;
-                hotelManager.addHotel(hotelManager.nhapThongTinKhachSanMoi());
-                cout << "Da them khach san moi." << endl;
+            case 1: {
+                system("cls");
+                int soLuongKhachSan;
+                cout << "Nhap so luong khach san muon them: ";
+                cin >> soLuongKhachSan;
+
+                for (int i = 0; i < soLuongKhachSan; ++i) {
+                    cout << "\n====== THEM KHACH SAN MOI ======" << endl;
+                    hotelManager.addHotel(hotelManager.nhapThongTinKhachSanMoi());
+                }
+                
+                cout << "\nThem khach san thanh cong!" << endl;
+                // dừng 2 giây trước khi xóa console
+                this_thread::sleep_for(chrono::seconds(2));
+                system("cls");
                 break;
+            }
             case 2:
                 system("cls");
                 cout << "\n====== XOA KHACH SAN ======" << endl;
@@ -355,6 +456,7 @@ int main() {
                 cout << "Nhap ma khach san muon xoa: ";
                 cin >> maHotel;
                 hotelManager.deleteHotel(maHotel);
+                
                 break;
             case 3:
                 system("cls");
@@ -372,6 +474,7 @@ int main() {
                 cout << "Danh gia (tu 1-5 sao): ";
                 cin >> ratingHotel;
                 hotelManager.suaThongTinKhachSan(maHotel, tenHotel, diaChiHotel, ratingHotel);
+                
                 break;
             case 0:
                 break;
@@ -433,6 +536,7 @@ int main() {
             break;
 
         case 0:
+            hotelManager.ghiDSHotelVaoFile("dsHotel.txt", hotelManager.getRoot());
             cout << "Tam biet!";
             break;
 
