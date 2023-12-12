@@ -20,12 +20,13 @@ public:
         : idHotel(idHotel), tenHotel(ten), diaChiHotel(diaChi), ratingHotel(saoRating) {}
 
     void hienThiTTHotel() const {
-        cout << "\t---------- HOTEL ----------" << endl;
-        cout << "\tID khach san: " << idHotel << endl;
-        cout << "\tTen khach san: " << tenHotel << endl;
-        cout << "\tDia chi khach san: " << diaChiHotel << endl;
-        cout << "\tDanh gia sao: " << ratingHotel << " sao" << endl;
-        cout << "\t---------------------------" << endl;
+        cout << "\t    ---------- HOTEL ----------" << endl;
+        cout << "\t    ID khach san: " << idHotel << endl;
+        cout << "\t    Ten khach san: " << tenHotel << endl;
+        cout << "\t    Dia chi khach san: " << diaChiHotel << endl;
+        cout << "\t    Danh gia sao: " << ratingHotel << " sao" << endl;
+        cout << "\t    ---------------------------" << endl;
+        cout << "\n";
     }
 
     int getMaHotel() const {
@@ -352,9 +353,9 @@ public:
 
 
 void khungLogin() {
-    cout << "+-----------------------+" << endl;
-    cout << "|      DANG NHAP        |" << endl;
-    cout << "+-----------------------+" << endl;
+    cout << "  +-----------------------+" << endl;
+    cout << "  |      DANG NHAP        |" << endl;
+    cout << "  +-----------------------+" << endl;
 }
 
 void printLine(int n) {
@@ -381,52 +382,59 @@ int main() {
     hotelManager.docDSHotelTuFile("dsHotel.txt");
 
 
-    //do {
-    //    system("cls");
-    //    khungLogin();
-    //
-    //    cout << "Nhap ten dang nhap: ";
-    //    cin >> username;
-    //
-    //    cout << "Nhap mat khau: ";
-    //    cin >> password;
-    //
-    //    if (username == tkAdmin && password == mkAdmin) {
-    //        system("cls");
-    //        cout << "+------------------------+" << endl;
-    //        cout << "|  DANG NHAP THANH CONG  |" << endl;
-    //        cout << "+------------------------+" << endl;
-    //        break;
-    //    }
-    //    else {
-    //        system("cls");
-    //        khungLogin();
-    //        cout << "+-----------------------+" << endl;
-    //        cout << "|  Dang nhap that bai.  |" << endl;
-    //        cout << "+-----------------------+" << endl;
-    //        cout << "Nhan Enter de dang nhap lai...";
-    //        cin.ignore(); // Đọc kí tự Enter từ bàn phím
-    //        cin.get();     // Đợi người dùng nhấn Enter
-    //    }
-    //} while (true);
+    do {
+        system("cls");
+        khungLogin();
+    
+        cout << "  Nhap ten dang nhap: ";
+        cin >> username;
+    
+        cout << "  Nhap mat khau: ";
+        cin >> password;
+    
+        if (username == tkAdmin && password == mkAdmin) {
+            system("cls");         
+            cout << "  +------------------------+" << endl;
+            cout << "  |  DANG NHAP THANH CONG  |" << endl;
+            cout << "  +------------------------+" << endl;        
+            break;
+        }
+        else {
+            system("cls");
+            khungLogin();
+            cout << "  +-----------------------+" << endl;
+            cout << "  |  Dang nhap that bai.  |" << endl;
+            cout << "  +-----------------------+" << endl;
+            cout << "\n";
+            cout << "Nhan Enter de dang nhap lai...";
+            cin.ignore(); // Đọc kí tự Enter từ bàn phím
+            cin.get();     // Đợi người dùng nhấn Enter
+        }
+    } while (true);
 
     do {
-        cout << "====== MENU ======" << endl;
-        cout << "1. Quan li khach san" << endl;
-        cout << "2. Xem danh sach khach san" << endl;
-        cout << "0. Thoat chuong trinh" << endl;
-        cout << "Nhap lua chon cua ban: ";
+        cout << "  +---------------------------+" << endl;
+        cout << "  |           MENU            |" << endl;
+        cout << "  +---------------------------+" << endl;
+        cout << "  |1. Quan li khach san       |" << endl;
+        cout << "  |2. Xem danh sach khach san |" << endl;
+        cout << "  |0. Thoat chuong trinh      |" << endl;
+        cout << "  +---------------------------+" << endl;
+        cout << "\n  Nhap lua chon cua ban: ";
         cin >> luaChon;
         system("cls");
         switch (luaChon) {
         case 1:
             int managerLuaChon;
-            cout << "====== QUAN LI KHACH SAN ======" << endl;
-            cout << "1. Them khach san" << endl;
-            cout << "2. Xoa khach san" << endl;
-            cout << "3. Sua thong tin khach san" << endl;
-            cout << "0. Quay lai menu chinh" << endl;
-            cout << "Nhap lua chon cua ban: ";
+            cout << "  +---------------------------+" << endl;
+            cout << "  |     QUAN LI KHACH SAN     |" << endl;
+            cout << "  +---------------------------+" << endl;
+            cout << "  |1. Them khach san          | " << endl;
+            cout << "  |2. Xoa khach san           |  " << endl;
+            cout << "  |3. Sua thong tin khach san |" << endl;
+            cout << "  |0. Quay lai menu chinh     |   " << endl;
+            cout << "  +---------------------------+ " << endl;
+            cout << "\n  Nhap lua chon cua ban: ";
             cin >> managerLuaChon;
 
             switch (managerLuaChon) {
@@ -450,9 +458,16 @@ int main() {
             }
             case 2:
                 system("cls");
-                cout << "\n====== XOA KHACH SAN ======" << endl;
-                cout << "Danh sach khach san hien co:" << endl;
+                printLine(55);
+                printLine(55);
+                cout << "\n            ====== XOA KHACH SAN ======" << endl;
+                cout << "            Danh sach khach san hien co " << endl;
+                cout << "\n";
+    
                 hotelManager.hienThiTatCaHotel();
+                printLine(55);
+                printLine(55);
+                cout << "\n";
                 cout << "Nhap ma khach san muon xoa: ";
                 cin >> maHotel;
                 hotelManager.deleteHotel(maHotel);
@@ -460,9 +475,15 @@ int main() {
                 break;
             case 3:
                 system("cls");
-                cout << "\n====== SUA THONG TIN ======" << endl;
-                cout << "Danh sach khach san hien co:" << endl;
+                printLine(55);
+                printLine(55);
+                cout << "\n            ====== SUA THONG TIN ======" << endl;
+                cout << "            Danh sach khach san hien co:" << endl;
+                cout << "\n";
                 hotelManager.hienThiTatCaHotel();
+                printLine(55);
+                printLine(55);
+                cout << "\n";
                 cout << "Nhap ma khach san muon sua thong tin: ";
                 cin >> maHotel;
                 cout << "Nhap thong tin moi cho khach san:" << endl;
@@ -485,12 +506,15 @@ int main() {
 
         case 2:
             int viewLuaChon;
-            cout << "====== XEM DANH SACH KHACH SAN ======" << endl;
-            cout << "1. Hien thi danh sach khach san" << endl;
-            cout << "2. Tim kiem khach san theo ma" << endl;
-            cout << "3. Sap xep theo dia diem khach san" << endl;
-            cout << "0. Quay lai menu chinh" << endl;
-            cout << "Nhap lua chon cua ban: ";
+            cout << "  +-----------------------------------+" << endl;
+            cout << "  |    XEM DANH SACH KHACH SAN        |" << endl;
+            cout << "  +-----------------------------------+" << endl;
+            cout << "  |1. Hien thi danh sach khach san    |" << endl;
+            cout << "  |2. Tim kiem khach san theo ma      |" << endl;
+            cout << "  |3. Sap xep theo dia diem khach san | " << endl;
+            cout << "  |0. Quay lai menu chinh             |" << endl;
+            cout << "  +-----------------------------------+" << endl;
+            cout << " \n Nhap lua chon cua ban: ";
             cin >> viewLuaChon;
 
             switch (viewLuaChon) {
@@ -499,11 +523,14 @@ int main() {
                 printLine(55);
                 printLine(55);
                 cout << "\n     ====== DANH SACH KHACH SAN HIEN CO ======" << endl;
-
+                cout << "\n";
 
                 hotelManager.hienThiTatCaHotel();
+              
+
                 printLine(55);
                 printLine(55);
+                cout << "\n";
                 break;
             case 2:
                 system("cls");
@@ -514,8 +541,16 @@ int main() {
                 tempDiaChiHotel = hotelManager.timHotelBangMaSo(maHotel);
 
                 if (tempDiaChiHotel != nullptr) {
-                    cout << "Thong tin khach san tim duoc:" << endl;
+                    printLine(55);
+                    printLine(55);    
+                    cout << "\n";
+                    cout << "            THONG TIN KHACH SAN TIM DUOC:" << endl;              
+                    cout << "\n";
+                 
                     tempDiaChiHotel->hienThiTTHotel();
+                    printLine(55);
+                    printLine(55);
+                    cout << "\n";
                 }
                 else {
                     cout << "Khong tim thay khach san voi ma " << maHotel << "." << endl;
