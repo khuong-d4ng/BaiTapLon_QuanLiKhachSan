@@ -77,19 +77,19 @@ private:
 
 
     // Hỗ trợ tìm kiếm node trong BST
-    Hotel* searchBSTNode(BSTNode* node, int code) {
-        if (node == nullptr || node->hotel.getMaHotel() == code) {
+    Hotel* searchBSTNode(BSTNode* node, int maHotelCanTim) {
+        if (node == nullptr || node->hotel.getMaHotel() == maHotelCanTim) {
             if (node != nullptr) {
                 return &(node->hotel);
             }
             return nullptr;
         }
 
-        if (code < node->hotel.getMaHotel()) {
-            return searchBSTNode(node->left, code);
+        if (maHotelCanTim < node->hotel.getMaHotel()) {
+            return searchBSTNode(node->left, maHotelCanTim);
         }
         else {
-            return searchBSTNode(node->right, code);
+            return searchBSTNode(node->right, maHotelCanTim);
         }
     }
 
@@ -111,16 +111,16 @@ private:
     }
 
     // Hỗ trợ xóa node trong BST
-    void deleteHotelFromBST(BSTNode*& node, int code) {
+    void deleteHotelFromBST(BSTNode*& node, int maHotelCanTim) {
         if (node == nullptr) {
             return;
         }
 
-        if (code < node->hotel.getMaHotel()) {
-            deleteHotelFromBST(node->left, code);
+        if (maHotelCanTim < node->hotel.getMaHotel()) {
+            deleteHotelFromBST(node->left, maHotelCanTim);
         }
-        else if (code > node->hotel.getMaHotel()) {
-            deleteHotelFromBST(node->right, code);
+        else if (maHotelCanTim > node->hotel.getMaHotel()) {
+            deleteHotelFromBST(node->right, maHotelCanTim);
         }
         else {
             if (node->left == nullptr) {
@@ -249,7 +249,7 @@ public:
     }
 
     //chia mảng theo pivot
-    int partition(vector<Hotel>& dsHotel, int batDau, int ketThuc) {
+    int chiaMangPivot(vector<Hotel>& dsHotel, int batDau, int ketThuc) {
         string pivot = dsHotel[ketThuc].getDiaChiHotel();
         int i = batDau - 1;
 
@@ -266,7 +266,7 @@ public:
     // sắp xếp theo địa chỉ (quicksort)
     void quickSort(vector<Hotel>& dsHotel, int batDau, int ketThuc) {
         if (batDau < ketThuc) {
-            int pi = partition(dsHotel, batDau, ketThuc);
+            int pi = chiaMangPivot(dsHotel, batDau, ketThuc);
             quickSort(dsHotel, batDau, pi - 1);
             quickSort(dsHotel, pi + 1, ketThuc);
         }

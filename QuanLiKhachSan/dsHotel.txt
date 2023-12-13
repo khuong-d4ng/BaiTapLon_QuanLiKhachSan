@@ -1,2 +1,4 @@
-1,1,1,1
-2,2,2,2
+1,Dong A,Ha Noi,3
+2,Tay Bac Resort,Hoa Binh,1
+3,Muong Thanh Hotel,Muong Thanh,3
+4,Skyline 2,An Giang,1
